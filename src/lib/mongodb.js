@@ -5,7 +5,10 @@ if (!process.env.BETTER_AUTH_DB_URL) {
 }
 
 const uri = process.env.BETTER_AUTH_DB_URL;
-const options = {};
+const options = {
+  connectTimeoutMS: 10000, // ১০ সেকেন্ডের বেশি কানেকশন ঝুলে থাকবে না
+  serverSelectionTimeoutMS: 10000,
+};
 
 let client;
 let clientPromise;
@@ -17,8 +20,12 @@ if (process.env.NODE_ENV === "development") {
   }
   clientPromise = global._mongoClientPromise;
 } else {
-  client = new MongoClient(uri, options);
-  clientPromise = client.connect();
+  // Production (Vercel Serverless): Global caching to reuse connection
+  if (!global._mongoClientPromise) {
+    client = new MongoClient(uri, options);
+    global._mongoClientPromise = client.connect();
+  }
+  clientPromise = global._mongoClientPromise;
 }
 
 export default clientPromise;
