@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import PriceTicker from "@/components/PriceTicker";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+export const dynamic = "force-dynamic";
 
 const inter = Inter({
   subsets: ["latin"],

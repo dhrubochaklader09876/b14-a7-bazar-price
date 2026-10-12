@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import Image from 'next/image';
 import ProductCard from '@/components/ProductCard';
+export const dynamic = "force-dynamic";
 
 
 async function getBazarProducts() {
