@@ -20,8 +20,13 @@ export default function ProductDetailsPage({ params }) {
   useEffect(() => {
     const fetchSession = async () => {
       try {
-        const res = await authClient.getSession();
-        setSession(res?.data || res);
+        // ❌ আগের ভুল কোড:
+        // const res = await authClient.getSession();
+        // setSession(res?.data || res);
+
+        // ✅ সঠিক কোড:
+        const { data } = await authClient.getSession();
+        setSession(data);
       } catch (err) {
         console.error("Session fetch error:", err);
       } finally {
@@ -76,7 +81,7 @@ export default function ProductDetailsPage({ params }) {
   return (
     <div className="bg-[#F8FAFC] min-h-screen py-10">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        
+
         <Link href="/" className="inline-flex items-center text-xs font-bold text-gray-500 hover:text-emerald-600">
           ← হোম পেজে ফিরুন
         </Link>
