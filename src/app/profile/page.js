@@ -1,77 +1,105 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useSession, updateUser } from "@/lib/auth-client";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "react-toastify";
 
 export default function ProfilePage() {
-  const { data: session, isPending } = useSession();
+  const router = useRouter();
+  const [session, setSession] = useState(null);
+  const [isPending, setIsPending] = useState(true);
   const [newName, setNewName] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
-  
+  // Session fetch kora
   useEffect(() => {
-    if (session?.user) {
-      setNewName(session.user.name);
-    }
-  }, [session]);
+    const fetchSession = async () => {
+      try {
+        const res = await authClient.getSession();
+        const sessionData = res?.data || res;
+        setSession(sessionData);
+        if (sessionData?.user?.name) {
+          setNewName(sessionData.user.name);
+        }
+      } catch (err) {
+        console.error("Session fetch error:", err);
+      } finally {
+        setIsPending(false);
+      }
+    };
+    fetchSession();
+  }, []);
 
-  
-  useEffect(() => {
-    if (!isPending && !session) {
-      router.push("/signin");
-    }
-  }, [session, isPending, router]);
-
- 
-  const handleUpdateName = async (e) => {
+  const handleUpdate = async (e) => {
     e.preventDefault();
+    if (!newName.trim()) {
+      toast.error("নাম খালি রাখা যাবে না!");
+      return;
+    }
+
     setLoading(true);
     try {
-      await updateUser({ name: newName });
-      alert("আপনার নাম সফলভাবে আপডেট হয়েছে!");
+      // Name update API call
+      await authClient.updateUser({
+        name: newName,
+      });
+
+      toast.success("নাম সফলভাবে আপডেট হয়েছে!");
+      // Page reload kora jate Navbar ebong Profile UI instant update hoy
       window.location.reload();
-    } catch (error) {
-      alert("নাম আপডেট করতে সমস্যা হয়েছে!");
+    } catch (err) {
+      console.error("Update error:", err);
+      toast.error("নাম আপডেট করতে সমস্যা হয়েছে!");
     } finally {
       setLoading(false);
     }
   };
 
-  if (isPending) return <p className="text-center mt-10 text-gray-600">লোড হচ্ছে...</p>;
-  if (!session) return null;
+  if (isPending) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <p className="text-gray-500 font-medium">লোড হচ্ছে...</p>
+      </div>
+    );
+  }
+
+  if (!session) {
+    router.push("/signin");
+    return null;
+  }
 
   return (
-    <div className="max-w-4xl mx-auto mt-8 p-8 bg-white rounded-2xl border border-gray-100 shadow-sm text-black">
-      <h2 className="text-xl font-bold mb-2">আমার প্রোফাইল</h2>
-      <p className="text-xs text-gray-400 mb-6">আপনার অ্যাকাউন্ট তথ্য এখানে আপডেট করুন</p>
+    <div className="max-w-2xl mx-auto my-10 p-6 bg-white rounded-3xl border border-gray-100 shadow-sm">
+      <h1 className="text-2xl font-bold text-gray-800">আমার প্রোফাইল</h1>
+      <p className="text-xs text-gray-400 mt-1 mb-6">আপনার অ্যাকাউন্ট তথ্য এখানে আপডেট করুন</p>
 
-      <div className="flex items-center gap-4 border-b border-gray-50 pb-6 mb-6">
-        <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center font-bold text-2xl text-emerald-700">
-          {session.user.name.charAt(0)}
+      <div className="flex items-center gap-4 mb-8 p-4 bg-gray-50 rounded-2xl">
+        <div className="w-16 h-16 rounded-full bg-[#E6F4EA] flex items-center justify-center text-[#10B981] font-bold text-xl">
+          {session.user?.name ? session.user.name.charAt(0).toUpperCase() : "U"}
         </div>
         <div>
-          <h3 className="text-lg font-bold text-gray-800">{session.user.name}</h3>
-          <p className="text-sm text-gray-400">{session.user.email}</p>
+          <h2 className="text-lg font-bold text-gray-800">{session.user?.name}</h2>
+          <p className="text-xs text-gray-500">{session.user?.email}</p>
         </div>
       </div>
 
-      <form onSubmit={handleUpdateName} className="max-w-md flex flex-col gap-4">
+      <form onSubmit={handleUpdate} className="space-y-4">
         <div>
-          <label className="block text-xs font-bold text-gray-500 mb-2">নাম</label>
+          <label className="block text-xs font-bold text-gray-700 mb-2">নাম</label>
           <input
             type="text"
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
-            className="input input-bordered w-full bg-gray-50 border-gray-200 text-black font-medium"
-            required
+            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-[#10B981] text-sm text-gray-800"
+            placeholder="আপনার নাম লিখুন"
           />
         </div>
+
         <button
           type="submit"
           disabled={loading}
-          className="btn bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl"
+          className="w-full py-3 bg-[#10B981] hover:bg-[#0D9668] text-white font-bold rounded-xl transition-colors cursor-pointer text-sm"
         >
           {loading ? "আপডেট হচ্ছে..." : "আপডেট"}
         </button>

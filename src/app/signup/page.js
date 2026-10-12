@@ -40,7 +40,7 @@ export default function SignUpPage() {
         toast.error(errorMsg);
       } else {
         toast.success("অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে!");
-        router.push("/"); 
+        window.location.href = "/"; 
       }
     } catch (err) {
       console.error(err);
@@ -63,7 +63,7 @@ export default function SignUpPage() {
         </div>
 
         {error && (
-          <div caassName="bg-red-500/10 border border-red-500/30 text-red-700 text-xs p-3 rounded-xl font-medium">
+          <div className="bg-red-500/10 border border-red-500/30 text-red-700 text-xs p-3 rounded-xl font-medium">
             ⚠️ {error}
           </div>
         )}
