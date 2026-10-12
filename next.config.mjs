@@ -1,6 +1,20 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  /* config options here */
+  serverExternalPackages: ["better-auth", "mongodb"],
 };
 
 export default nextConfig;
+
+
+
+
+
+// 
+
+
+// /** @type {import('next').NextConfig} */
+// const nextConfig = {
+//   /* config options here */
+// };
+
+// export default nextConfig;
