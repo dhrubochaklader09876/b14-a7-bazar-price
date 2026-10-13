@@ -11,7 +11,7 @@ export default function ProductCard({ product }) {
   const percent = product.change?.pct || "0.0";
 
   const handleCardClick = () => {
-    // সরাসরি প্রোডাক্ট ডিটেইলস পেজে রিডাইরেক্ট করবে, কোনো এক্সট্রা API কল ছাড়াই
+    
     router.push(`/product/${product.id || product._id}`);
   };
 

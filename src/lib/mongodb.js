@@ -6,7 +6,7 @@ if (!process.env.BETTER_AUTH_DB_URL) {
 
 const uri = process.env.BETTER_AUTH_DB_URL;
 const options = {
-  connectTimeoutMS: 10000, // ১০ সেকেন্ডের বেশি কানেকশন ঝুলে থাকবে না
+  connectTimeoutMS: 10000, 
   serverSelectionTimeoutMS: 10000,
 };
 

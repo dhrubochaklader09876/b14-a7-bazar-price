@@ -20,11 +20,7 @@ export default function ProductDetailsPage({ params }) {
   useEffect(() => {
     const fetchSession = async () => {
       try {
-        // ❌ আগের ভুল কোড:
-        // const res = await authClient.getSession();
-        // setSession(res?.data || res);
-
-        // ✅ সঠিক কোড:
+        
         const { data } = await authClient.getSession();
         setSession(data);
       } catch (err) {
@@ -36,14 +32,14 @@ export default function ProductDetailsPage({ params }) {
     fetchSession();
   }, []);
 
-  // Protected route check
+ 
   useEffect(() => {
     if (!isPending && !session) {
       router.push("/signin");
     }
   }, [session, isPending, router]);
 
-  // Product details fetch kora
+  
   useEffect(() => {
     if (session) {
       const fetchProductDetails = async () => {

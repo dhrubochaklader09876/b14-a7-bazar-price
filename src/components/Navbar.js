@@ -13,11 +13,11 @@ export default function Navbar() {
   const [isPending, setIsPending] = useState(true);
 
  useEffect(() => {
-    // Session load kora
+   
     const getSessionData = async () => {
       try {
         const res = await authClient.getSession();
-        // Better-auth session response safety check
+        
         if (res?.data) {
           setSession(res.data);
         } else if (res) {

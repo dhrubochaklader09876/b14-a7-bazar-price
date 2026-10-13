@@ -12,7 +12,7 @@ export default function ProfilePage() {
   const [newName, setNewName] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Session fetch kora
+  
   useEffect(() => {
     const fetchSession = async () => {
       try {
@@ -40,13 +40,13 @@ export default function ProfilePage() {
 
     setLoading(true);
     try {
-      // Name update API call
+      
       await authClient.updateUser({
         name: newName,
       });
 
       toast.success("নাম সফলভাবে আপডেট হয়েছে!");
-      // Page reload kora jate Navbar ebong Profile UI instant update hoy
+     
       window.location.reload();
     } catch (err) {
       console.error("Update error:", err);
